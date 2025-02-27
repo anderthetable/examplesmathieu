@@ -49,24 +49,22 @@ export default function GrokyGame() {
                     return;
                 }
 
-                /* 🎯 Buscar las direcciones de los jugadores (pago si ganan)
+                // Search for the player wallet
                 const playerOutputs = tx.vout.filter(output =>
-                    output.scriptPubKey?.addresses?.some(addr => addr !== wallet.tokenaddr)
+                    output.scriptPubKey?.addresses?.some(addr => addr !== wallet.cashaddr)
                 );
 
                 if (playerOutputs.length === 0) {
-                    console.log("⚠️ Ignored: No valid player outputs found", tx.txid);
                     return;
                 }
 
-                // Obtener la primera dirección válida de jugador
+                
                 const playerAddress = playerOutputs[0].scriptPubKey.addresses.find(addr => addr !== wallet.tokenaddr);
                 if (!playerAddress) {
-                    console.log("⚠️ Ignored: No valid address found for player", tx.txid);
                     return;
                 }
-                */
-                // 🎲 Determinar si la apuesta es ganadora
+                  
+                
                 const randomNum = Math.random() * 99;
                 const win = randomNum <= 48;
                 console.log("🎲 Bet outcome:", win ? "Win" : "Lose");
