@@ -8,7 +8,7 @@ export default function GrokyGame() {
     const [qr, setQr] = useState();
     const [wallet, setWallet] = useState();
     const [transactions, setTransactions] = useState([]);
-    const tokenId = "d03a0d876afba161101674e363398e33939cc2164bd7ea5baccd937497d6216f"; // Token de la transacción JSON subida
+    const tokenId = "d03a0d876afba161101674e363398e33939cc2164bd7ea5baccd937497d6216f";
 
     useEffect(() => {
         const initWallet = async () => {
@@ -19,40 +19,37 @@ export default function GrokyGame() {
             const processedTxs = new Set();
 
             const cancelWatch = wallet.watchAddressTransactions(async (tx) => {
-                if (processedTxs.has(tx.txid)) return; // Evita procesar TX duplicadas
+                if (processedTxs.has(tx.txid)) return; // Ignore duplicate Tx
                 processedTxs.add(tx.txid);
 
                 console.log("🔍 Checking Transaction:", tx.txid);
-
+                
+                //I use this variable later to identify type of tx
                 let totalTokensReceivedByGame = 0;
                 let totalTokensSentByGame = 0;
 
-                // 🔎 Analizar todos los `vout`
+                // Analize all vouts
                 tx.vout.forEach(output => {
                     if (output.tokenData?.category === tokenId) {
                         if (output.scriptPubKey?.addresses?.includes(wallet.tokenaddr)) {
-                            totalTokensReceivedByGame += output.tokenData.amount; // El juego recibe tokens
+                            totalTokensReceivedByGame += output.tokenData.amount;
                         } else {
-                            totalTokensSentByGame += output.tokenData.amount; // El juego envía tokens
+                            totalTokensSentByGame += output.tokenData.amount;
                         }
                     }
                 });
 
-                console.log(`📊 Tokens Recibidos por el Juego: ${totalTokensReceivedByGame}, Tokens Enviados por el Juego: ${totalTokensSentByGame}`);
-
-                // 🚨 Si el juego ha enviado tokens y también ha recibido tokens, es un pago y se ignora.
+                // If the game sends and recive tokens, its payout and I ignore it
                 if (totalTokensSentByGame > 0 && totalTokensReceivedByGame > 0) {
-                    console.log("⚠️ Ignored: This is a payout TX (not a bet)", tx.txid);
                     return;
                 }
 
-                // 🚨 Si no hay tokens recibidos por el juego, también se ignora.
+                // Also ignore if the game don't recive tokens
                 if (totalTokensReceivedByGame === 0) {
-                    console.log("⚠️ Ignored: No tokens received by the game, this is not a bet", tx.txid);
                     return;
                 }
 
-                // 🎯 Buscar las direcciones de los jugadores (pago si ganan)
+                /* 🎯 Buscar las direcciones de los jugadores (pago si ganan)
                 const playerOutputs = tx.vout.filter(output =>
                     output.scriptPubKey?.addresses?.some(addr => addr !== wallet.tokenaddr)
                 );
@@ -68,7 +65,7 @@ export default function GrokyGame() {
                     console.log("⚠️ Ignored: No valid address found for player", tx.txid);
                     return;
                 }
-
+                */
                 // 🎲 Determinar si la apuesta es ganadora
                 const randomNum = Math.random() * 99;
                 const win = randomNum <= 48;
