@@ -11,12 +11,12 @@ const cancelWatch = wallet.watchAddressTransactions(async (tx) => {
         return
     }
     if(tx.vout[0]?.tokenData?.category === tokenid){
-        console.log("Tienes Groky!!");
-        console.log("Vamos a jugar a un juego");
-        console.log("Si yo gano me quedo esos Grokys, si pierdo te devuelvo el doble");
+        console.log("You have Groky!!");
+        console.log("Lets play a game");
+        console.log("If I win I get those Grokys, else I back you double");
         const randomNum = Math.random() * 99;
         if (randomNum <= 48){
-            console.log("¡Ganaste! Enviando el doble de tokens. A " + toTokenaddr(tx.vout[1].scriptPubKey.addresses[0]));
+            console.log("¡You win! Sending double tokens to: " + toTokenaddr(tx.vout[1].scriptPubKey.addresses[0]));
             const sendValue = tx.vout[0].tokenData.amount * 2;
             const sendResponse = await wallet.send([
                 new TokenSendRequest({
@@ -28,11 +28,11 @@ const cancelWatch = wallet.watchAddressTransactions(async (tx) => {
             ]);
             console.log(sendResponse.txId)
         } else {
-            console.log("Has perdido, prueba otra vez");
+            console.log("You lose, try again");
         }
     }else if(tx.vout[0]?.tokenData){
-        console.log("Estas enviando Shitcoins? Compra Groky en Cauldron ya!!");
+        console.log("Are you sending Shitcoins? Buy Groky on Cauldron now!!");
     } else {
-        console.log("Gracias por el BCH, pero esto va con Grokys");
+        console.log("Thank you for the BCH, but this goes with Grokys");
     }
   });
